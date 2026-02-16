@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- € symbol: C-arc + two horizontal bars, centered in 66dp safe zone (21-87) -->
+    <!-- C-arc: open circle from ~50° to ~310° -->
+    <path
+        android:pathData="M68,40.5 A18,18 0,1,0 68,67.5"
+        android:strokeColor="#4DD0E1"
+        android:strokeWidth="5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <!-- Upper horizontal bar -->
+    <path
+        android:pathData="M38,49 L60,49"
+        android:strokeColor="#4DD0E1"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <!-- Lower horizontal bar -->
+    <path
+        android:pathData="M38,59 L58,59"
+        android:strokeColor="#4DD0E1"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>
