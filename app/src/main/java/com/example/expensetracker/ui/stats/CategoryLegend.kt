@@ -117,7 +117,7 @@ fun CategoryLegend(
                         )
                     }
                 }
-                if (category.categoryId != -1) {
+                if (category.hasChildren) {
                     IconButton(
                         onClick = { onDrillDown(category) }
                     ) {

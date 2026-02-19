@@ -16,7 +16,8 @@ interface StatsDao {
 
     @Query("""
         SELECT c.id AS categoryId, c.name AS categoryName, c.fullPath AS fullPath,
-               c.icon AS icon, SUM(e.amount) AS totalAmount, COUNT(e.id) AS expenseCount
+               c.icon AS icon, SUM(e.amount) AS totalAmount, COUNT(e.id) AS expenseCount,
+               (SELECT COUNT(*) FROM categories sub WHERE sub.parentId = c.id) > 0 AS hasChildren
         FROM expenses e
         INNER JOIN categories c ON e.categoryId = c.id
         WHERE e.date BETWEEN :startDate AND :endDate
@@ -66,7 +67,8 @@ interface StatsDao {
                 )
             END AS icon,
             SUM(e.amount) AS totalAmount,
-            COUNT(e.id) AS expenseCount
+            COUNT(e.id) AS expenseCount,
+            1 AS hasChildren
         FROM expenses e
         INNER JOIN categories c ON e.categoryId = c.id
         WHERE e.date BETWEEN :startDate AND :endDate
@@ -75,14 +77,16 @@ interface StatsDao {
     """)
     suspend fun getRootCategoryRollup(startDate: String, endDate: String): List<CategoryTotal>
 
-    // === Drill-down: direct children of a specific category + parent itself ===
+    // === Drill-down: direct children of a specific category ===
     // Rolls up all descendant expenses into direct children (e.g. Housing > Utilities
     // includes expenses from Housing > Utilities > Electricity).
 
     @Query("""
         SELECT child.id AS categoryId, child.name AS categoryName, child.fullPath AS fullPath,
                child.icon AS icon, COALESCE(SUM(e.amount), 0) AS totalAmount,
-               COALESCE(COUNT(e.id), 0) AS expenseCount
+               COALESCE(COUNT(e.id), 0) AS expenseCount,
+               (SELECT COUNT(*) FROM categories sub
+                WHERE sub.parentId = child.id) > 0 AS hasChildren
         FROM categories child
         LEFT JOIN categories descendant
             ON descendant.fullPath = child.fullPath
@@ -90,9 +94,8 @@ interface StatsDao {
         LEFT JOIN expenses e
             ON e.categoryId = descendant.id
             AND e.date BETWEEN :startDate AND :endDate
-        WHERE child.fullPath = :parentPath
-           OR (child.fullPath LIKE :parentPath || ' > %'
-               AND child.fullPath NOT LIKE :parentPath || ' > % > %')
+        WHERE child.fullPath LIKE :parentPath || ' > %'
+          AND child.fullPath NOT LIKE :parentPath || ' > % > %'
         GROUP BY child.id
         HAVING totalAmount > 0
         ORDER BY totalAmount DESC

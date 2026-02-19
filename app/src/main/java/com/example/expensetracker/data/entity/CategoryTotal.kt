@@ -6,5 +6,6 @@ data class CategoryTotal(
     val fullPath: String,
     val icon: String,
     val totalAmount: Int,
-    val expenseCount: Int
+    val expenseCount: Int,
+    val hasChildren: Boolean = false
 )

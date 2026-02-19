@@ -249,7 +249,7 @@ fun StatsScreen(
                     onSegmentDoubleTapped = { idx ->
                         selectedChartIndex = null
                         val category = uiState.categoryBreakdown.getOrNull(idx)
-                        if (category != null && category.categoryId != -1) {
+                        if (category != null && category.hasChildren) {
                             viewModel.drillDown(category.fullPath, category.categoryName)
                         }
                     },
