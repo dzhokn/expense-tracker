@@ -47,6 +47,7 @@ class ConfirmDialogTest {
             }
         }
         composeTestRule.onNodeWithText("Yes").performClick()
+        composeTestRule.waitUntil(1000) { confirmed }
         assertTrue(confirmed)
     }
 
@@ -65,6 +66,7 @@ class ConfirmDialogTest {
             }
         }
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.waitUntil(1000) { dismissed }
         assertTrue(dismissed)
     }
 }

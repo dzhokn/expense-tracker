@@ -19,8 +19,8 @@ class CategoryLegendTest {
     val composeTestRule = createComposeRule()
 
     private val categories = listOf(
-        testCategoryTotal(categoryId = 1, categoryName = "Food", totalAmount = 5000, expenseCount = 10),
-        testCategoryTotal(categoryId = 2, categoryName = "Transport", icon = "directions_car", totalAmount = 3000, expenseCount = 5)
+        testCategoryTotal(categoryId = 1, categoryName = "Food", totalAmount = 5000, expenseCount = 10, hasChildren = true),
+        testCategoryTotal(categoryId = 2, categoryName = "Transport", icon = "directions_car", totalAmount = 3000, expenseCount = 5, hasChildren = true)
     )
 
     @Test
@@ -93,5 +93,67 @@ class CategoryLegendTest {
         val nodes = composeTestRule.onAllNodesWithContentDescription("Drill down")
             .fetchSemanticsNodes()
         assertTrue("Expected at least 1 drill down arrow", nodes.isNotEmpty())
+    }
+
+    @Test
+    fun leafCategoryHidesDrillDownArrow() {
+        val leafCategories = listOf(
+            testCategoryTotal(categoryId = 1, categoryName = "Groceries", totalAmount = 3000, expenseCount = 5, hasChildren = false),
+            testCategoryTotal(categoryId = 2, categoryName = "Dining", icon = "dining", totalAmount = 2000, expenseCount = 3, hasChildren = false)
+        )
+        composeTestRule.setContent {
+            ExpenseTrackerTheme {
+                CategoryLegend(
+                    categories = leafCategories,
+                    grandTotal = 5000,
+                    selectedIndex = null,
+                    onItemTapped = {},
+                    onDrillDown = {}
+                )
+            }
+        }
+        val nodes = composeTestRule.onAllNodesWithContentDescription("Drill down")
+            .fetchSemanticsNodes()
+        assertEquals(0, nodes.size)
+    }
+
+    @Test
+    fun mixedHasChildrenShowsCorrectArrowCount() {
+        val mixedCategories = listOf(
+            testCategoryTotal(categoryId = 1, categoryName = "Food", totalAmount = 5000, expenseCount = 10, hasChildren = true),
+            testCategoryTotal(categoryId = 2, categoryName = "Dining", icon = "dining", totalAmount = 3000, expenseCount = 5, hasChildren = false)
+        )
+        composeTestRule.setContent {
+            ExpenseTrackerTheme {
+                CategoryLegend(
+                    categories = mixedCategories,
+                    grandTotal = 8000,
+                    selectedIndex = null,
+                    onItemTapped = {},
+                    onDrillDown = {}
+                )
+            }
+        }
+        val nodes = composeTestRule.onAllNodesWithContentDescription("Drill down")
+            .fetchSemanticsNodes()
+        assertEquals(1, nodes.size)
+    }
+
+    @Test
+    fun drillDownCallsOnDrillDownCallback() {
+        var drillDownCategory: com.example.expensetracker.data.entity.CategoryTotal? = null
+        composeTestRule.setContent {
+            ExpenseTrackerTheme {
+                CategoryLegend(
+                    categories = categories,
+                    grandTotal = 8000,
+                    selectedIndex = null,
+                    onItemTapped = {},
+                    onDrillDown = { drillDownCategory = it }
+                )
+            }
+        }
+        composeTestRule.onAllNodesWithContentDescription("Drill down")[0].performClick()
+        assertEquals("Food", drillDownCategory?.categoryName)
     }
 }

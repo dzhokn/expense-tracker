@@ -27,7 +27,7 @@ class AddExpenseFlowTest {
         DatabaseSeeder.seed(db)
         // Insert a test expense so getMostUsedCategories() returns "Food" in chip row
         db.execSQL(
-            "INSERT INTO expenses (categoryId, amount, note, date, timestamp) VALUES (1, 1000, 'test', '2026-02-17', ${System.currentTimeMillis()})"
+            "INSERT INTO expenses (categoryId, amount, note, date, timestamp) VALUES (11, 1000, 'test', '2026-02-17', ${System.currentTimeMillis()})"
         )
     }
 
@@ -51,7 +51,8 @@ class AddExpenseFlowTest {
     fun addExpenseSheetShowsCategoryChips() {
         composeTestRule.onNodeWithContentDescription("Add expense").performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("CATEGORY").assertIsDisplayed()
+        // "CATEGORY" header was removed. Assert "More..." chip (always rendered by CategoryChipRow)
+        composeTestRule.onNodeWithText("More...").assertIsDisplayed()
     }
 
     @Test

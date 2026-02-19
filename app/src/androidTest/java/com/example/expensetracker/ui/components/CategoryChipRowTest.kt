@@ -64,18 +64,19 @@ class CategoryChipRowTest {
     }
 
     @Test
-    fun showsCategoryLabel() {
+    fun rendersWithEmptyCategories() {
         composeTestRule.setContent {
             ExpenseTrackerTheme {
                 CategoryChipRow(
-                    categories = categories.take(3),
+                    categories = emptyList(),
                     selected = null,
                     onSelect = {},
                     onMore = {}
                 )
             }
         }
-        composeTestRule.onNodeWithText("CATEGORY").assertIsDisplayed()
+        // "More..." chip is always rendered even with empty categories
+        composeTestRule.onNodeWithText("More...").assertIsDisplayed()
     }
 
     @Test

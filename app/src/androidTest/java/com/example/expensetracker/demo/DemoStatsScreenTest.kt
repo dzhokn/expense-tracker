@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.assertEquals
 import com.example.expensetracker.MainActivity
 import com.example.expensetracker.TestExpenseTrackerApp
 import com.example.expensetracker.data.DatabaseSeeder
@@ -173,6 +174,36 @@ class DemoStatsScreenTest {
             rule.onAllNodesWithText("All >", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("All >", substring = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun statsDrillDownToLeafShowsNoArrow() {
+        // Housing is the top category by amount (~€1,060 rent + utilities).
+        // Drill Housing → Utilities → leaf level (Electricity, Water Supply) should have 0 arrows.
+        waitForText("BREAKDOWN")
+        rule.waitUntil(5000) {
+            rule.onAllNodesWithContentDescription("Drill down").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Step 1: Drill into Housing (first/top category)
+        rule.onAllNodesWithContentDescription("Drill down")[0].performClick()
+        rule.waitUntil(5000) {
+            rule.onAllNodesWithText("All >", substring = true).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Step 2: At Housing level — Rent/Mortgage (leaf, no arrow) + Utilities (has children, has arrow)
+        // Drill into Utilities via its arrow (only arrow visible at this level)
+        rule.waitUntil(5000) {
+            rule.onAllNodesWithContentDescription("Drill down").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onAllNodesWithContentDescription("Drill down")[0].performClick()
+
+        // Step 3: At Utilities level — Electricity + Water Supply are leaves
+        rule.waitUntil(5000) {
+            rule.onAllNodesWithText("Electricity").fetchSemanticsNodes().isNotEmpty()
+        }
+        val leafArrows = rule.onAllNodesWithContentDescription("Drill down").fetchSemanticsNodes()
+        assertEquals("Leaf categories should have no drill-down arrows", 0, leafArrows.size)
     }
 
     @Test

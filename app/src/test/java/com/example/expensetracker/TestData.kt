@@ -56,10 +56,12 @@ fun testCategoryTotal(
     fullPath: String = "Food",
     icon: String = "restaurant",
     totalAmount: Int = 5000,
-    expenseCount: Int = 10
+    expenseCount: Int = 10,
+    hasChildren: Boolean = false
 ) = CategoryTotal(
     categoryId = categoryId, categoryName = categoryName, fullPath = fullPath,
-    icon = icon, totalAmount = totalAmount, expenseCount = expenseCount
+    icon = icon, totalAmount = totalAmount, expenseCount = expenseCount,
+    hasChildren = hasChildren
 )
 
 fun testDailyTotal(

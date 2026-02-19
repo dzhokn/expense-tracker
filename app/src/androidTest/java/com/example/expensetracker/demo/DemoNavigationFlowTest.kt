@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import com.example.expensetracker.MainActivity
 import com.example.expensetracker.TestExpenseTrackerApp
@@ -192,6 +193,19 @@ class DemoNavigationFlowTest {
                 rule.onAllNodesWithText("Custom").fetchSemanticsNodes().isNotEmpty() ||
                 rule.onAllNodesWithText("No data for this period").fetchSemanticsNodes().isNotEmpty()
         }
+    }
+
+    @Test
+    fun settingsShowsAllSections() {
+        rule.onNodeWithText("Settings").performClick()
+        rule.waitUntil(5000) {
+            rule.onAllNodesWithText("DATA").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("DATA").assertIsDisplayed()
+        rule.onNodeWithText("CUSTOMIZATION").assertIsDisplayed()
+        // DANGER ZONE may be below the fold — scroll to it first
+        rule.onNodeWithText("DANGER ZONE").performScrollTo()
+        rule.onNodeWithText("DANGER ZONE").assertIsDisplayed()
     }
 
     @Test

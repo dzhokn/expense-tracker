@@ -99,7 +99,7 @@ class NavigationSmokeTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("Import data").performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Select CSV File").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Select File").assertIsDisplayed()
     }
 
     @Test
