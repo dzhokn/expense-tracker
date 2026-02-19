@@ -140,6 +140,8 @@ class NumpadComponentTest {
             ExpenseTrackerTheme {
                 NumpadComponent(
                     amountText = "",
+                    date = com.example.expensetracker.util.DateUtils.today(),
+                    onDateClick = {},
                     onDigitPressed = {},
                     onBackspacePressed = {},
                     onDone = {},

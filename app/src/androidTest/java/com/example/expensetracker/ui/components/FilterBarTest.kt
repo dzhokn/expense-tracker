@@ -24,6 +24,7 @@ class FilterBarTest {
             ExpenseTrackerTheme {
                 FilterBar(
                     filterState = defaultFilterState,
+                    allCategories = emptyList(),
                     onSearchQueryChanged = {},
                     onCategoryFilterChanged = {},
                     onDateRangeChanged = { _, _ -> },
@@ -41,6 +42,7 @@ class FilterBarTest {
             ExpenseTrackerTheme {
                 FilterBar(
                     filterState = defaultFilterState,
+                    allCategories = emptyList(),
                     onSearchQueryChanged = {},
                     onCategoryFilterChanged = {},
                     onDateRangeChanged = { _, _ -> },
@@ -58,6 +60,7 @@ class FilterBarTest {
             ExpenseTrackerTheme {
                 FilterBar(
                     filterState = defaultFilterState,
+                    allCategories = emptyList(),
                     onSearchQueryChanged = {},
                     onCategoryFilterChanged = {},
                     onDateRangeChanged = { _, _ -> },
@@ -76,6 +79,7 @@ class FilterBarTest {
             ExpenseTrackerTheme {
                 FilterBar(
                     filterState = defaultFilterState,
+                    allCategories = emptyList(),
                     onSearchQueryChanged = {},
                     onCategoryFilterChanged = {},
                     onDateRangeChanged = { _, _ -> },
@@ -97,6 +101,7 @@ class FilterBarTest {
             ExpenseTrackerTheme {
                 FilterBar(
                     filterState = activeFilter,
+                    allCategories = emptyList(),
                     onSearchQueryChanged = {},
                     onCategoryFilterChanged = {},
                     onDateRangeChanged = { _, _ -> },
