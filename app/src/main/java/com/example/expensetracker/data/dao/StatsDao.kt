@@ -76,17 +76,25 @@ interface StatsDao {
     suspend fun getRootCategoryRollup(startDate: String, endDate: String): List<CategoryTotal>
 
     // === Drill-down: direct children of a specific category + parent itself ===
+    // Rolls up all descendant expenses into direct children (e.g. Housing > Utilities
+    // includes expenses from Housing > Utilities > Electricity).
 
     @Query("""
-        SELECT c.id AS categoryId, c.name AS categoryName, c.fullPath AS fullPath,
-               c.icon AS icon, SUM(e.amount) AS totalAmount, COUNT(e.id) AS expenseCount
-        FROM expenses e
-        INNER JOIN categories c ON e.categoryId = c.id
-        WHERE e.date BETWEEN :startDate AND :endDate
-          AND (c.fullPath = :parentPath
-               OR (c.fullPath LIKE :parentPath || ' > %'
-                   AND c.fullPath NOT LIKE :parentPath || ' > % > %'))
-        GROUP BY c.id
+        SELECT child.id AS categoryId, child.name AS categoryName, child.fullPath AS fullPath,
+               child.icon AS icon, COALESCE(SUM(e.amount), 0) AS totalAmount,
+               COALESCE(COUNT(e.id), 0) AS expenseCount
+        FROM categories child
+        LEFT JOIN categories descendant
+            ON descendant.fullPath = child.fullPath
+            OR descendant.fullPath LIKE child.fullPath || ' > %'
+        LEFT JOIN expenses e
+            ON e.categoryId = descendant.id
+            AND e.date BETWEEN :startDate AND :endDate
+        WHERE child.fullPath = :parentPath
+           OR (child.fullPath LIKE :parentPath || ' > %'
+               AND child.fullPath NOT LIKE :parentPath || ' > % > %')
+        GROUP BY child.id
+        HAVING totalAmount > 0
         ORDER BY totalAmount DESC
     """)
     suspend fun getCategoryDrillDown(

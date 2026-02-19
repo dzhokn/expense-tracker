@@ -274,12 +274,13 @@ internal fun AddExpenseContent(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Note with autocomplete
+        // Note with autocomplete — Enter key saves the expense
         NoteAutocomplete(
             note = uiState.note,
             onNoteChanged = onNoteChanged,
             suggestions = uiState.autocompleteSuggestions,
-            onSuggestionSelected = onSuggestionSelected
+            onSuggestionSelected = onSuggestionSelected,
+            onImeAction = onDone
         )
 
         // Error message

@@ -33,6 +33,7 @@ fun NoteAutocomplete(
     onNoteChanged: (String) -> Unit,
     suggestions: List<String>,
     onSuggestionSelected: (String) -> Unit,
+    onImeAction: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
@@ -60,7 +61,10 @@ fun NoteAutocomplete(
                 cursorColor = OnSurface
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()
+                onImeAction?.invoke()
+            })
         )
 
         // Autocomplete dropdown
